@@ -7,6 +7,7 @@ on:
 jobs:
   issue-handler:
     runs-on: ubuntu-latest
+
     steps:
       - name: Display Issue Event
         run: echo "An issue event has been triggered!"
@@ -18,3 +19,14 @@ jobs:
       - name: When Issue is Closed
         if: github.event.action == 'closed'
         run: echo "An issue was closed"
+
+      - name: Add Comment to Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Thank you for reporting this issue. The team will review it."
+            })
